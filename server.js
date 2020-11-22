@@ -9,9 +9,11 @@ const port         = 8000;
 app.use(bodyParser.urlencoded({ extended: true}))
 
 
-MongoClient.connect(db.url, (err, database) =>{
-    if (err) return console.log(err);
-    require('./app/routes')(app, database);
+
+const client = new MongoClient(db.url, { useNewUrlParser: true });
+client.connect(err => {
+    const database = client.db("notable")
+    routes(app, database);
     app.listen(port, ()=>{
         console.log('we are Live & Listening on '+port);
     });
